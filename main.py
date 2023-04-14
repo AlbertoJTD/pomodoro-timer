@@ -35,7 +35,6 @@ def reset_timer():
 
 def start_timer():
     global iteration
-    global sessions_completed
 
     iteration += 1
 
