@@ -17,8 +17,19 @@ SHORT_BREAK_MIN = 5
 LONG_BREAK_MIN = 20
 
 iteration = 0
+timer = None
+
 
 # ---------------------------- TIMER RESET ------------------------------- #
+
+def reset_timer():
+    global iteration
+    window.after_cancel(timer)
+    title_label.config(text='Timer')
+    canvas.itemconfig(timer_text, text='00:00')
+    check_marks.config(text='')
+    iteration = 0
+
 
 # ---------------------------- TIMER MECHANISM ------------------------------- #
 
@@ -33,13 +44,13 @@ def start_timer():
     long_break_seconds = LONG_BREAK_MIN * 60
 
     if iteration % 2 != 0:
-        timer_label.config(text='Work', fg=GREEN)
+        title_label.config(text='Work', fg=GREEN)
         count_down(work_seconds)
     elif iteration == 8:
-        timer_label.config(text='Break', fg=RED)
+        title_label.config(text='Break', fg=RED)
         count_down(long_break_seconds)
     else:
-        timer_label.config(text='Break', fg=PINK)
+        title_label.config(text='Break', fg=PINK)
         count_down(short_break_seconds)
 
 
@@ -55,7 +66,8 @@ def count_down(count):
 
     canvas.itemconfig(timer_text, text=f'{minutes}:{seconds}')
     if count > 0:
-        window.after(1000, count_down, count - 1)
+        global timer
+        timer = window.after(1000, count_down, count - 1)
     else:
         start_timer()
         check_marks.config(text='✔' * int(iteration / 2))
@@ -66,9 +78,9 @@ window.title("Pomodoro timer")
 window.config(padx=100, pady=50, bg=YELLOW)
 
 # Timer label
-timer_label = Label(text='Timer')
-timer_label.config(bg=YELLOW, fg=GREEN, font=(FONT_NAME, 50, 'bold'))
-timer_label.grid(row=0, column=1)
+title_label = Label(text='Timer')
+title_label.config(bg=YELLOW, fg=GREEN, font=(FONT_NAME, 50, 'bold'))
+title_label.grid(row=0, column=1)
 
 # Add image to the background
 canvas = Canvas(width=256, height=256, bg=YELLOW, highlightthickness=0)
@@ -82,7 +94,7 @@ start_button = Button(text='Start', command=start_timer)
 start_button.grid(row=2, column=0)
 
 # Reset button
-start_button = Button(text='Reset')
+start_button = Button(text='Reset', command=reset_timer)
 start_button.grid(row=2, column=2)
 
 # Check marks
