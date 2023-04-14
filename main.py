@@ -16,28 +16,54 @@ WORK_MIN = 25
 SHORT_BREAK_MIN = 5
 LONG_BREAK_MIN = 20
 
+iteration = 0
+
 # ---------------------------- TIMER RESET ------------------------------- #
 
 # ---------------------------- TIMER MECHANISM ------------------------------- #
 
 def start_timer():
-    count_down(5 * 60)
+    global iteration
+    global sessions_completed
+
+    iteration += 1
+
+    work_seconds = WORK_MIN * 60
+    short_break_seconds = SHORT_BREAK_MIN * 60
+    long_break_seconds = LONG_BREAK_MIN * 60
+
+    if iteration % 2 != 0:
+        timer_label.config(text='Work', fg=GREEN)
+        count_down(work_seconds)
+    elif iteration == 8:
+        timer_label.config(text='Break', fg=RED)
+        count_down(long_break_seconds)
+    else:
+        timer_label.config(text='Break', fg=PINK)
+        count_down(short_break_seconds)
+
 
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- #
 def count_down(count):
-
     minutes = math.floor(count / 60)
     seconds = count % 60
+
+    if seconds == 0:
+        seconds = '00'
+    elif seconds < 10:
+        seconds = f'0{seconds}'
 
     canvas.itemconfig(timer_text, text=f'{minutes}:{seconds}')
     if count > 0:
         window.after(1000, count_down, count - 1)
+    else:
+        start_timer()
+        check_marks.config(text='✔' * int(iteration / 2))
 
 # ---------------------------- UI SETUP ------------------------------- #
 window = Tk()
 window.title("Pomodoro timer")
 window.config(padx=100, pady=50, bg=YELLOW)
-
 
 # Timer label
 timer_label = Label(text='Timer')
@@ -60,7 +86,7 @@ start_button = Button(text='Reset')
 start_button.grid(row=2, column=2)
 
 # Check marks
-check_marks = Label(text='✔', bg=YELLOW)
+check_marks = Label(bg=YELLOW, fg=GREEN)
 check_marks.grid(row=3, column=1)
 
 
