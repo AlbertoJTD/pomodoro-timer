@@ -97,7 +97,7 @@ start_button = Button(text='Reset', command=reset_timer, font=(FONT_NAME, 15, 'b
 start_button.grid(row=2, column=2)
 
 # Check marks
-check_marks = Label(bg=YELLOW, fg=GREEN)
+check_marks = Label(bg=YELLOW, fg=GREEN, font=('normal', 18, 'bold'))
 check_marks.grid(row=3, column=1)
 
 
